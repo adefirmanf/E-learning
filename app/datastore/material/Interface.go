@@ -4,6 +4,7 @@ import (
 	"e-learning/app/models"
 )
 
+// Material .
 type Material interface {
 	List() ([]*models.Material, error)
 	Get(MaterialID int) (*models.Material, error)
