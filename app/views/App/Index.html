@@ -30,7 +30,6 @@
     </div>
 
     <div class="row-70"></div>
-
     <div class="row text-center justify-content-sm-center no-gutters">
       <div
         class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-3 m-auto pt-5 pt-xl-0"
@@ -99,42 +98,22 @@
         </p>
       </div>
     </div>
-
-    <div class="row text-center justify-content-center mt-5">
-      <div class="col-10 col-sm-3">
+    <div class="row text-left justify-content-left mt-5">
+      {{range .materials}}
+      <div class="col-10 col-sm-3 mt-4">
+        {{if .ImgURL}}
+        <img alt="image" class="img-fluid rounded" src="{{.ImgURL}}" />
+        {{else}}
         <img
           alt="image"
           class="img-fluid rounded"
           src="/public/img/hero/blue.svg"
         />
-        <h3><strong>Course One</strong></h3>
+        {{end}}
+        <h3><strong>{{.Name}}</strong></h3>
+        <small class="text-muted">Uploaded by: {{.Author}}</small>
       </div>
-      <div class="col-10 col-sm-3 pt-5 pt-sm-0">
-        <img
-          alt="image"
-          class="img-fluid rounded"
-          src="/public/img/hero/red.svg"
-        />
-        <h3><strong>Course Two</strong></h3>
-      </div>
-
-      <div class="col-10 col-sm-3 pt-5 pt-sm-0">
-        <img
-          alt="image"
-          class="img-fluid rounded"
-          src="/public/img/hero/purple.svg"
-        />
-        <h3><strong>Course Three</strong></h3>
-      </div>
-
-      <div class="col-10 col-sm-3 pt-5 pt-sm-0">
-        <img
-          alt="image"
-          class="img-fluid rounded"
-          src="/public/img/hero/yellow.svg"
-        />
-        <h3><strong>Course Four</strong></h3>
-      </div>
+      {{end}}
     </div>
   </div>
 </section>

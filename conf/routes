@@ -8,8 +8,9 @@ module:testrunner
 
 
 GET     /                                       App.Index
-GET     /login                                       App.Login
-GET     /dashboard                                   App.Dashboard
+GET     /login                                  App.Login
+GET     /dashboard                              App.Dashboard
+GET     /material/:id/                          App.Material
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
