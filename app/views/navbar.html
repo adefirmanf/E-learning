@@ -44,8 +44,11 @@
             ></a>
           </li>
         </ul>
-
+        {{if (session "isLoggedIn" .)}}
+        <a class="btn btn-outline-primary ml-md-3" href="/dashboard">Dashboard</a>
+        {{else}}
         <a class="btn btn-outline-primary ml-md-3" href="/login">Login</a>
+        {{end}}
       </div>
     </nav>
   </div>
