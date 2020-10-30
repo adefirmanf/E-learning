@@ -13,7 +13,11 @@
         </p>
       </div>
       <div class="col-12 col-md-6 ml-md-auto mt-4 mt-md-0">
-        <img alt="image" class="img-fluid" src="/public/img/shapes/2.svg" />
+        <img
+          alt="image"
+          class="img-fluid"
+          src="/public/img/draws/design-life.svg"
+        />
       </div>
     </div>
   </div>
@@ -101,17 +105,19 @@
     <div class="row text-left justify-content-left mt-5">
       {{range .materials}}
       <div class="col-10 col-sm-3 mt-4">
-        {{if .ImgURL}}
-        <img alt="image" class="img-fluid rounded" src="{{.ImgURL}}" />
-        {{else}}
-        <img
-          alt="image"
-          class="img-fluid rounded"
-          src="/public/img/hero/blue.svg"
-        />
-        {{end}}
-        <h3><strong>{{.Name}}</strong></h3>
-        <small class="text-muted">Uploaded by: {{.Author}}</small>
+        <a href="/material/{{ .MaterialID}}" class="text-muted">
+          {{if .ImgURL}}
+          <img alt="image" class="img-fluid rounded" src="{{.ImgURL}}" />
+          {{else}}
+          <img
+            alt="image"
+            class="img-fluid rounded"
+            src="/public/img/hero/blue.svg"
+          />
+          {{end}}
+          <h3><strong>{{.Name}}</strong></h3>
+          <small class="text-muted">Uploaded by: {{.Author}}</small>
+        </a>
       </div>
       {{end}}
     </div>

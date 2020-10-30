@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/revel/revel"
+)
 
 // User .
 type User struct {
@@ -12,4 +16,10 @@ type User struct {
 	IsVerified bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+// Validate .
+func (user *User) Validate(v *revel.Validation) {
+	v.Required(user.Email)
+	v.Required(user.Password)
 }
