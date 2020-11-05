@@ -88,7 +88,12 @@ func (c App) Material(id int) revel.Result {
 
 // ManageMaterials .
 func (c App) ManageMaterials() revel.Result {
-	return c.Render()
+	m := material.NewMaterial(inmem.NewMaterialInMem(inmem.SeederMaterial()))
+	materials, err := m.List()
+	if err != nil {
+		panic(err)
+	}
+	return c.Render(materials)
 }
 
 func (c App) getUser(email string) *models.User {
