@@ -10,6 +10,7 @@ module:testrunner
 GET     /                                       App.Index
 GET     /login                                  App.Login
 GET     /dashboard                              App.Dashboard
+GET     /dashboard/materials                              App.ManageMaterials
 GET     /material/:id/                          App.Material
 POST    /verify                                 App.Verify
 GET    /auth                                 App.Auth

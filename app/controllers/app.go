@@ -86,6 +86,11 @@ func (c App) Material(id int) revel.Result {
 	return c.Render(material)
 }
 
+// ManageMaterials .
+func (c App) ManageMaterials() revel.Result {
+	return c.Render()
+}
+
 func (c App) getUser(email string) *models.User {
 	var user models.User
 	_, err := c.Session.GetInto("email", user, false)
