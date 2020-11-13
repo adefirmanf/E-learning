@@ -9,6 +9,7 @@ module:testrunner
 
 GET     /                                       App.Index
 GET     /login                                  App.Login
+GET     /register                               App.Register
 GET     /dashboard                              App.Dashboard
 GET     /dashboard/materials                    App.ManageMaterials
 GET     /material/:id/                          App.Material

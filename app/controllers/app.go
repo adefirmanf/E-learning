@@ -32,6 +32,11 @@ func (c App) Login() revel.Result {
 	return c.Render()
 }
 
+// Register .
+func (c App) Register() revel.Result {
+	return c.Render()
+}
+
 // Verify .
 func (c App) Verify(email, password string) revel.Result {
 	c.Validation.Required(email).Message("Please input your email")
@@ -42,6 +47,11 @@ func (c App) Verify(email, password string) revel.Result {
 		return c.Redirect(App.Login)
 	}
 	return c.Redirect(App.Auth, email, password)
+}
+
+// AddUser .
+func (c App) AddUser() revel.Result {
+	return c.Redirect(App.Index)
 }
 
 // Auth .

@@ -1,0 +1,81 @@
+{{set . "title" "Login"}} {{template "header.html" .}}
+<div>{{template "navbar.html"}}</div>
+<section class="fdb-block py-0">
+  <div
+    class="container py-5 my-5"
+    style="background-image: url(/public/img/draws/development.svg)"
+  >
+    <div class="row justify-content-end">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5 text-left">
+        <div class="fdb-box">
+          <div class="row">
+            <div class="col">
+              <h1>Sign Up</h1>
+              <p class="lead">
+                Right at the coast of the Semantics, a large language ocean. A
+                small river named Duden.
+              </p>
+              {{if .flash.error}}
+              <div class="alert alert-danger" role="alert">
+                {{.flash.error}}
+              </div>
+              {{end}}
+            </div>
+          </div>
+          <form action="/verify" method="POST">
+            <div class="row">
+              <div class="col mt-1 form-group">
+
+                <small id="emailHelp" class="form-text text-danger">{{.errors.email}}</small>
+                <input
+                  type="text"
+                  name="email"
+                  class="form-control"
+                  placeholder="Email"
+                  value="{{.flash.email}}"
+                />
+              </div>
+            </div>
+            <div class="row mt-1 form-group">
+              <div class="col ">
+                <small id="emailHelp" class="form-text text-danger">{{.errors.password}}</small>
+                <input
+                  type="password"
+                  name="password"
+                  class="form-control"
+                  placeholder="Password"
+                  id="password"
+                  value="{{.flash.password}}"
+                />
+              </div>
+            </div>
+            <div class="row mt-1 form-group">
+                <div class="col ">
+                  <small id="emailHelp" class="form-text text-danger">{{.errors.password}}</small>
+                  <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Repeat Password"
+                    id="password"
+                    value="{{.flash.password}}"
+                  />
+                </div>
+              </div>
+            <div class="row form-group">
+              <div class="col">
+                <input class="btn btn-secondary" type="submit" value="Sign Up"></input>
+              </div>
+            </div>
+            <div class="row mt-4 form-group">
+              <div class="col text-center">
+                <p class="text-muted">Already have an account yet? <b>Sign in here</b></p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div>{{template "footer.html" .}}</div>
