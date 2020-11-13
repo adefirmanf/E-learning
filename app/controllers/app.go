@@ -96,6 +96,12 @@ func (c App) ManageMaterials() revel.Result {
 	return c.Render(materials)
 }
 
+// Upload .
+func (c App) Upload(title, description, author, category, resource string) revel.Result {
+	fmt.Println(title, description, author, category, resource)
+	return c.Render(title, description, author, category, resource)
+}
+
 func (c App) getUser(email string) *models.User {
 	var user models.User
 	_, err := c.Session.GetInto("email", user, false)
