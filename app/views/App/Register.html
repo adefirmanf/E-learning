@@ -22,7 +22,7 @@
               {{end}}
             </div>
           </div>
-          <form action="/verify" method="POST">
+          <form action="/register" method="POST">
             <div class="row">
               <div class="col mt-1 form-group">
 
@@ -51,14 +51,14 @@
             </div>
             <div class="row mt-1 form-group">
                 <div class="col ">
-                  <small id="emailHelp" class="form-text text-danger">{{.errors.password}}</small>
+                  <small id="emailHelp" class="form-text text-danger">{{.errors.password2}}</small>
                   <input
                     type="password"
-                    name="password"
+                    name="password2"
                     class="form-control"
                     placeholder="Repeat Password"
-                    id="password"
-                    value="{{.flash.password}}"
+                    id="password2"
+                    value="{{.flash.password2}}"
                   />
                 </div>
               </div>

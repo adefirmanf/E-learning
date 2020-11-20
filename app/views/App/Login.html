@@ -20,9 +20,14 @@
                 {{.flash.error}}
               </div>
               {{end}}
+              {{if .flash.success}}
+              <div class="alert alert-success" role="alert">
+                {{.flash.success}}
+              </div>
+              {{end}}
             </div>
           </div>
-          <form action="/verify" method="POST">
+          <form action="/auth" method="POST">
             <div class="row">
               <div class="col mt-1 form-group">
 

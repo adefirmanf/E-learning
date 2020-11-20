@@ -13,9 +13,9 @@ GET     /register                               App.Register
 GET     /dashboard                              App.Dashboard
 GET     /dashboard/materials                    App.ManageMaterials
 GET     /material/:id/                          App.Material
-POST     /material/upload/                      App.Upload
-POST    /verify                                 App.Verify
-GET    /auth                                    App.Auth
+POST    /material/upload/                       App.Upload
+POST    /auth                                   App.Auth
+POST    /register                               App.AddUser
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

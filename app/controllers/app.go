@@ -1,20 +1,23 @@
 package controllers
 
 import (
+	"database/sql"
+	"e-learning/app/storage"
+	"e-learning/app/storage/user/db"
 	"e-learning/app/models"
 	"e-learning/app/routes"
 	"e-learning/app/storage/material"
 	"e-learning/app/storage/material/inmem"
 	"e-learning/app/storage/user"
-	inmemuser "e-learning/app/storage/user/inmem"
 	"fmt"
-
+	_ "github.com/lib/pq"
 	"github.com/revel/revel"
 )
 
 // App .
 type App struct {
 	*revel.Controller
+	db *sql.DB
 }
 
 // Index .
@@ -34,11 +37,12 @@ func (c App) Login() revel.Result {
 
 // Register .
 func (c App) Register() revel.Result {
+	
 	return c.Render()
 }
 
-// Verify .
-func (c App) Verify(email, password string) revel.Result {
+// Auth . 
+func (c App) Auth(email, password string) revel.Result {
 	c.Validation.Required(email).Message("Please input your email")
 	c.Validation.Required(password).Message("Please input your password")
 	if c.Validation.HasErrors() {
@@ -46,17 +50,11 @@ func (c App) Verify(email, password string) revel.Result {
 		c.FlashParams()
 		return c.Redirect(App.Login)
 	}
-	return c.Redirect(App.Auth, email, password)
-}
-
-// AddUser .
-func (c App) AddUser() revel.Result {
-	return c.Redirect(App.Index)
-}
-
-// Auth .
-func (c App) Auth(email, password string) revel.Result {
-	user := user.NewUser(inmemuser.NewUserInMem(inmemuser.SeederUser()))
+	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+	if err != nil {
+		panic(err)
+	}
+	user := user.NewUser(db.NewUserDB(connection))
 	if !user.IsValid(email, password) {
 		c.Flash.Error("Invalid e-mail / password")
 		c.Validation.Keep()
@@ -71,6 +69,33 @@ func (c App) Auth(email, password string) revel.Result {
 		return c.Redirect(routes.App.Material(int(convID)))
 	}
 	return c.Redirect(App.Index)
+}
+
+// AddUser .
+func (c App) AddUser(email, password, password2 string) revel.Result {
+	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+	if err != nil {
+		panic(err)
+	}
+	user := user.NewUser(db.NewUserDB(connection))
+
+	c.Validation.Required(email).Message("Please input your email")
+	c.Validation.Required(password).Message("Please input your password")
+	c.Validation.Required(password2).Message("Please input your repeat password")
+	if c.Validation.HasErrors(){
+		c.Validation.Keep()
+		c.FlashParams()
+		return c.Redirect(App.Register)
+	}
+	_, err = user.Create(email, password, email)
+	if err != nil {
+		c.Flash.Error("Something went wrong")
+		c.Validation.Keep()
+		c.FlashParams()
+		return c.Redirect(App.Register)
+	}
+	c.Flash.Success("Congratulations, your account was created. You can login with your account")
+	return c.Redirect(App.Login)
 }
 
 // Dashboard .

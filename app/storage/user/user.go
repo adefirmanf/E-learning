@@ -19,6 +19,11 @@ func (r *Repository) IsValid(Email, Password string) bool {
 	return r.Service.IsValid(Email, Password)
 }
 
+// Create . 
+func (r *Repository) Create(Username, Password, Email string) (int64, error){
+	return r.Service.Create(Username, Password, Email)
+}
+
 // HashPassword .
 func hashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
