@@ -7,7 +7,7 @@ import (
 	"e-learning/app/models"
 	"e-learning/app/routes"
 	"e-learning/app/storage/material"
-	"e-learning/app/storage/material/inmem"
+	mdb "e-learning/app/storage/material/db"
 	"e-learning/app/storage/user"
 	"fmt"
 	_ "github.com/lib/pq"
@@ -22,7 +22,11 @@ type App struct {
 
 // Index .
 func (c App) Index() revel.Result {
-	m := material.NewMaterial(inmem.NewMaterialInMem(inmem.SeederMaterial()))
+	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+	if err != nil {
+		panic(err)
+	}
+	m := material.NewMaterial(mdb.NewMaterialDB(connection))
 	materials, err := m.List()
 	if err != nil {
 		panic(err)
@@ -105,7 +109,11 @@ func (c App) Dashboard() revel.Result {
 
 // Material .
 func (c App) Material(id int) revel.Result {
-	_, err := c.Session.Get("isLoggedIn")
+	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+	if err != nil {
+		panic(err)
+	}
+	_, err = c.Session.Get("isLoggedIn")
 	if err != nil {
 		c.Session.Set("recentMaterial", id)
 		c.Flash.Error("You need login before continue")
@@ -113,7 +121,7 @@ func (c App) Material(id int) revel.Result {
 		c.FlashParams()
 		return c.Redirect(App.Login)
 	}
-	m := material.NewMaterial(inmem.NewMaterialInMem(inmem.SeederMaterial()))
+	m := material.NewMaterial(mdb.NewMaterialDB(connection))
 	material, err := m.Get(id)
 	if err != nil {
 		panic(err)
@@ -123,7 +131,11 @@ func (c App) Material(id int) revel.Result {
 
 // ManageMaterials .
 func (c App) ManageMaterials() revel.Result {
-	m := material.NewMaterial(inmem.NewMaterialInMem(inmem.SeederMaterial()))
+	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+	if err != nil {
+		panic(err)
+	}
+	m := material.NewMaterial(mdb.NewMaterialDB(connection))
 	materials, err := m.List()
 	if err != nil {
 		panic(err)
