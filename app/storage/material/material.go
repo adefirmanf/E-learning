@@ -25,8 +25,13 @@ func (r *Repository) Create(Name, Description, Category, ImgURL, URL, Author str
 }
 
 // Update .
-func (r *Repository) Update(MaterialID int, Name, Description, Category, ImgURL, URL, Author string, UploadedByUser int) (int64, error) {
-	return r.service.Update(MaterialID, Name, Description, Category, ImgURL, URL, Author, UploadedByUser)
+func (r *Repository) Update(MaterialID int, Name, Description, Category, ImgURL, URL, Author string) (int64, error) {
+	return r.service.Update(MaterialID, Name, Description, Category, ImgURL, URL, Author)
+}
+
+// Delete .
+func (r *Repository) Delete(MaterialID int) (int64, error) {
+	return r.service.Delete(MaterialID)
 }
 
 // NewMaterial .

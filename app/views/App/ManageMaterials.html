@@ -359,6 +359,7 @@
                         <th rowspan="1" colspan="1">Category</th>
                         <th rowspan="1" colspan="1">Author</th>
                         <th rowspan="1" colspan="1">CreatedAt</th>
+                        <th rowspan="1" colspan="1">UpdatedAt</th>
                         <th rowspan="1" colspan="1">Actions</th>
                     </thead>
                   <tbody>
@@ -369,8 +370,21 @@
                       <td>{{.Category}}</td>
                       <td>{{.Author}}</td>
                       <td>{{.CreatedAt}}</td>
-                      <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
-                        <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                      <td>{{.UpdatedAt}}</td>
+                      <td><button type="button" id="fetchData" class="btn btn-primary btn-sm fetchData" data-toggle="modal" 
+                        data-id="{{.MaterialID}}"  
+                        data-name={{.Name}}
+                        data-description={{.Description}}
+                        data-category={{.Category}}
+                        data-author={{.Author}}
+                        data-url={{.URL}}
+                        data-imgurl={{.ImgURL}}
+                        data-uploadedby={{.UploadedByUserID}}
+                        data-target="#editModal">Edit</button>
+                        <button type="button" id="deleteData" class="btn btn-danger btn-sm" data-toggle="modal" 
+                        data-id="{{.MaterialID}}"  
+                        data-name={{.Name}}
+                        data-target="#deleteModal">Delete</button>
                       </td>
                     </tbody>
                     {{end}}
@@ -436,54 +450,85 @@
       </div>
     </div>
   </div>
+
   <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editModal">Upload</h5>
+          <h5 class="modal-title" id="editModal">Update</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <form  action="/material/upload" method="POST">
+          <form  action="/material/update" method="POST">
             <div class="form-group">
               <label for="exampleInputEmail1">Title</label>
-              <input type="text" name="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter title" value="{{.flash.title}}">
+              <input type="text" name="title" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter title" value="{{.flash.title}}">
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Description</label>
-              <textarea class="form-control" name="description"  id="exampleInputPassword1" placeholder="Enter description " value="{{.flash.description}}"></textarea>
+              <textarea class="form-control" name="description"  id="description" placeholder="Enter description " value="{{.flash.description}}"></textarea>
               <small id="emailHelp" class="form-text text-muted">Maximum 250 characters</small>
             </div>
             <div class="form-group">
               <div class="row">
                 <div class="col">
                   <label for="exampleInputEmail1">Author</label>
-                  <input type="text" name="author" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter author" value="{{.flash.author}}">
+                  <input type="text" name="author" class="form-control" id="author" aria-describedby="emailHelp" placeholder="Enter author" value="{{.flash.author}}">
                   <small id="emailHelp"  class="form-text text-muted">Original author for this material. Always respect the ownership</small>
                 </div>
                 <div class="col">
                   <label for="exampleInputEmail1">Category</label>
-                  <input type="text"name="category" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter category" value="{{.flash.category}}">
+                  <input type="text"name="category" class="form-control" id="category" aria-describedby="emailHelp" placeholder="Enter category" value="{{.flash.category}}">
                 </div>
               </div>
             </div>
             <div class="form-group">
-              <label for="exampleInputEmail1">Resource link</label>
-              <input type="url" name="resourceLink" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="https://" value="{{.flash.resourceLink}}">
+              <div class="row">
+                <div class="col">
+                  <label for="exampleInputEmail1">Resource link</label>
+                  <input type="url" name="resourceLink" class="form-control" id="resourcelink" aria-describedby="emailHelp" placeholder="https://" value="{{.flash.resourceLink}}">
+                </div>
+                <div class="col">
+                  <label for="exampleInputEmail1">Image Cover URL</label>
+                  <input type="url" name="imgURL" class="form-control" id="imgURL" aria-describedby="emailHelp" placeholder="https://" value="{{.flash.imgURL}}">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="hidden" name="materialID" class="form-control" id="materialID"  value="{{.flash.materialID}}">
             </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <input class="btn btn-primary " type="submit" value="Upload"></input>
+          <input class="btn btn-primary " type="submit" value="Update"></input>
         </div>
   
       </form>
       </div>
     </div>
   </div>
-
+<!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="deleteValue">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="#"  id="deleteBtn" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
   <!-- Bootstrap core JavaScript-->
   <script src="/public/js/jquery-2.2.4.min.js"></script>
   <script src="/public/js/bootstrap.bundle.min.js"></script>
@@ -510,3 +555,36 @@
         overflow-x: hidden;
     }
 </style>
+<script>
+  var deleteName;
+  var deleteId;
+  $(document).on("click", ".fetchData", function(data){
+    const id = $(this).data('id')
+    const name = $(this).data('name')
+    const description = $(this).data('description')
+    const category = $(this).data('category')
+    const author = $(this).data('author')
+    const url = $(this).data('url')
+    const imgurl = $(this).data('imgurl')
+    const uploadedby = $(this).data('uploadedby')
+    
+    $("#materialID").val(id)
+    $('#name').val(name)
+    $("#description").val(description)
+    $("#category").val(category)
+    $("#author").val(author)
+    $("#resourcelink").val(url)
+    $("#imgURL").val(imgurl)
+
+    console.log(imgurl)
+  })
+
+  $(document).on("click", "#deleteData", function(data){
+    deleteId = $(this).data('id')
+    deleteName = $(this).data('name')
+    $("#deleteValue").html("Do you really want to delete "+ name.bold() +" record? This process cannot be undone.")
+    // $("#deleteBtn").addClass("btn btn-danger")
+    $("#deleteBtn").attr("href", "/material/delete/" + deleteId)
+  })
+
+</script>

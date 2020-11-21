@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"strconv"
 	"database/sql"
 	"e-learning/app/storage"
 	"e-learning/app/storage/user/db"
@@ -144,9 +145,68 @@ func (c App) ManageMaterials() revel.Result {
 }
 
 // Upload .
-func (c App) Upload(title, description, author, category, resource string) revel.Result {
-	fmt.Println(title, description, author, category, resource)
-	return c.Render(title, description, author, category, resource)
+func (c App) Upload(title, description, author, category, imgURL, resourceLink string) revel.Result {
+	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+	if err != nil {
+		panic(err)
+	}
+	if imgURL == "" {
+		imgURL = "/public/img/hero/purple.svg"
+	}
+	m := material.NewMaterial(mdb.NewMaterialDB(connection))
+	_, err = m.Create(
+		title, 
+		description, 
+		category,
+		imgURL,
+		resourceLink, 
+		author,
+		1,
+	)
+	if err != nil {
+		panic(err)
+	}
+	return c.Redirect(App.Index)
+}
+// Update . 
+func (c App) Update(materialID int, title, description, author, category, imgURL, resourceLink string) revel.Result {
+	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+	if err != nil {
+		panic(err)
+	}
+	if imgURL == "" {
+		imgURL = "/public/img/hero/purple.svg"
+	}
+	m := material.NewMaterial(mdb.NewMaterialDB(connection))
+	_, err = m.Update(
+		materialID,
+		title, 
+		description, 
+		category,
+		imgURL,
+		resourceLink, 
+		author,
+	)
+	if err != nil {
+		panic(err)
+	}
+	return c.Redirect(App.ManageMaterials)
+}
+
+// Delete . 
+func (c App) Delete() revel.Result{
+	id := c.Params.Route.Get("id")
+	MaterialID, err := strconv.Atoi(id)
+	if err != nil {
+		panic(err)
+	}
+	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+	m := material.NewMaterial(mdb.NewMaterialDB(connection))
+	_, err = m.Delete(MaterialID)
+	if err != nil {
+		panic(err)
+	}
+	return c.Redirect(App.ManageMaterials)
 }
 
 func (c App) getUser(email string) *models.User {

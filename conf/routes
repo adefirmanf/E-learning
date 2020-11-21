@@ -14,6 +14,8 @@ GET     /dashboard                              App.Dashboard
 GET     /dashboard/materials                    App.ManageMaterials
 GET     /material/:id/                          App.Material
 POST    /material/upload/                       App.Upload
+POST    /material/update/                       App.Update
+GET     /material/delete/:id/                   App.Delete
 POST    /auth                                   App.Auth
 POST    /register                               App.AddUser
 

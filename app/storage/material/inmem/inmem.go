@@ -31,7 +31,12 @@ func (m *MaterialInMem) Create(Name, Description, Category, ImgURL, URL, Author 
 }
 
 // Update .
-func (m *MaterialInMem) Update(MaterialID int, Name, Description, Category, ImgURL, URL, Author string, UplaodedByUserID int) (int64, error) {
+func (m *MaterialInMem) Update(MaterialID int, Name, Description, Category, ImgURL, URL, Author string) (int64, error) {
+	return 0, nil
+}
+
+// Delete .
+func (m *MaterialInMem) Delete(MaterialID int) (int64, error) {
 	return 0, nil
 }
 

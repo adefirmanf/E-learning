@@ -494,8 +494,16 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="exampleInputEmail1">Resource link</label>
-            <input type="url" name="resourceLink" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="https://" value="{{.flash.resourceLink}}">
+            <div class="row">
+              <div class="col">
+                <label for="exampleInputEmail1">Resource link</label>
+                <input type="url" name="resourceLink" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="https://" value="{{.flash.resourceLink}}">
+              </div>
+              <div class="col">
+                <label for="exampleInputEmail1">Image Cover URL</label>
+                <input type="url" name="imgURL" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="https://" value="{{.flash.imgURL}}">
+              </div>
+            </div>
           </div>
       </div>
       <div class="modal-footer">

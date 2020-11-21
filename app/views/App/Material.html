@@ -13,17 +13,14 @@
       </div>
       <div class="col-12 col-md-6 col-xl-5">
         <div class="fdb-box rounded-bottom-0">
-          <p class="lead">
-            Deserunt ea dolore deserunt in occaecat nostrud. Voluptate ad
-            officia culpa fugiat excepteur.
-          </p>
+          <p class="lead">{{ .material.Description}}</p>
 
           <p class="lead mt-4">
-            <a class="btn btn-outline-primary" href="https://www.froala.com"
+            <a
+              class="btn btn-outline-primary"
+              href="{{ .material.URL}}"
+              target="_blank"
               >Visit Site</a
-            >
-            <a class="btn btn-outline-primary" href="https://www.froala.com"
-              >Share</a
             >
           </p>
         </div>
@@ -32,4 +29,5 @@
   </div>
 </section>
 
+<style></style>
 {{template "footer.html" .}}
