@@ -5,29 +5,58 @@ import (
 	"database/sql"
 	"e-learning/app/storage"
 	"e-learning/app/storage/user/db"
+	userinmem 	"e-learning/app/storage/user/inmem"
 	"e-learning/app/models"
 	"e-learning/app/routes"
 	"e-learning/app/storage/material"
 	mdb "e-learning/app/storage/material/db"
+	minmem "e-learning/app/storage/material/inmem"
 	"e-learning/app/storage/user"
 	"fmt"
 	_ "github.com/lib/pq"
 	"github.com/revel/revel"
 )
 
+// Connection . 
+var Connection = "db"
 // App .
 type App struct {
 	*revel.Controller
 	db *sql.DB
 }
 
+// Service . 
+type Service struct{
+	Material *material.Repository
+	User *user.Repository
+}
+
+func service() *Service {
+	var materialRepository *material.Repository 
+	var userRepository *user.Repository 
+
+	if Connection == "inemm" {
+		connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
+		if err != nil {
+			panic(err)
+		}
+		materialRepository = material.NewMaterial(mdb.NewMaterialDB(connection))
+		userRepository = user.NewUser(db.NewUserDB(connection))
+	} else{
+		materialRepository = material.NewMaterial(minmem.NewMaterialInMem(minmem.SeederMaterial()))
+		userRepository = user.NewUser(userinmem.NewUserInMem(userinmem.SeederUser()))
+	}
+	
+	return &Service{
+		Material : materialRepository,
+		User : userRepository,
+	}
+}
 // Index .
 func (c App) Index() revel.Result {
-	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
-	if err != nil {
-		panic(err)
-	}
-	m := material.NewMaterial(mdb.NewMaterialDB(connection))
+	s := service()
+
+	m := s.Material
 	materials, err := m.List()
 	if err != nil {
 		panic(err)
@@ -48,6 +77,7 @@ func (c App) Register() revel.Result {
 
 // Auth . 
 func (c App) Auth(email, password string) revel.Result {
+	s := service()
 	c.Validation.Required(email).Message("Please input your email")
 	c.Validation.Required(password).Message("Please input your password")
 	if c.Validation.HasErrors() {
@@ -55,11 +85,7 @@ func (c App) Auth(email, password string) revel.Result {
 		c.FlashParams()
 		return c.Redirect(App.Login)
 	}
-	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
-	if err != nil {
-		panic(err)
-	}
-	user := user.NewUser(db.NewUserDB(connection))
+	user := s.User
 	if !user.IsValid(email, password) {
 		c.Flash.Error("Invalid e-mail / password")
 		c.Validation.Keep()
@@ -78,11 +104,8 @@ func (c App) Auth(email, password string) revel.Result {
 
 // AddUser .
 func (c App) AddUser(email, password, password2 string) revel.Result {
-	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
-	if err != nil {
-		panic(err)
-	}
-	user := user.NewUser(db.NewUserDB(connection))
+	s:= service()
+	user := s.User
 
 	c.Validation.Required(email).Message("Please input your email")
 	c.Validation.Required(password).Message("Please input your password")
@@ -92,7 +115,7 @@ func (c App) AddUser(email, password, password2 string) revel.Result {
 		c.FlashParams()
 		return c.Redirect(App.Register)
 	}
-	_, err = user.Create(email, password, email)
+	_, err := user.Create(email, password, email)
 	if err != nil {
 		c.Flash.Error("Something went wrong")
 		c.Validation.Keep()
@@ -110,11 +133,10 @@ func (c App) Dashboard() revel.Result {
 
 // Material .
 func (c App) Material(id int) revel.Result {
-	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
-	if err != nil {
-		panic(err)
-	}
-	_, err = c.Session.Get("isLoggedIn")
+	s := service()
+	m := s.Material
+
+	_, err := c.Session.Get("isLoggedIn")
 	if err != nil {
 		c.Session.Set("recentMaterial", id)
 		c.Flash.Error("You need login before continue")
@@ -122,7 +144,6 @@ func (c App) Material(id int) revel.Result {
 		c.FlashParams()
 		return c.Redirect(App.Login)
 	}
-	m := material.NewMaterial(mdb.NewMaterialDB(connection))
 	material, err := m.Get(id)
 	if err != nil {
 		panic(err)
@@ -132,11 +153,9 @@ func (c App) Material(id int) revel.Result {
 
 // ManageMaterials .
 func (c App) ManageMaterials() revel.Result {
-	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
-	if err != nil {
-		panic(err)
-	}
-	m := material.NewMaterial(mdb.NewMaterialDB(connection))
+	s := service()
+	m := s.Material
+	
 	materials, err := m.List()
 	if err != nil {
 		panic(err)
@@ -146,15 +165,14 @@ func (c App) ManageMaterials() revel.Result {
 
 // Upload .
 func (c App) Upload(title, description, author, category, imgURL, resourceLink string) revel.Result {
-	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
-	if err != nil {
-		panic(err)
-	}
+	s := service()
+	m := s.Material
+
 	if imgURL == "" {
 		imgURL = "/public/img/hero/purple.svg"
 	}
-	m := material.NewMaterial(mdb.NewMaterialDB(connection))
-	_, err = m.Create(
+
+	_, err := m.Create(
 		title, 
 		description, 
 		category,
@@ -170,15 +188,14 @@ func (c App) Upload(title, description, author, category, imgURL, resourceLink s
 }
 // Update . 
 func (c App) Update(materialID int, title, description, author, category, imgURL, resourceLink string) revel.Result {
-	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
-	if err != nil {
-		panic(err)
-	}
+	s := service()
+	m := s.Material
+
 	if imgURL == "" {
 		imgURL = "/public/img/hero/purple.svg"
 	}
-	m := material.NewMaterial(mdb.NewMaterialDB(connection))
-	_, err = m.Update(
+	
+	_, err := m.Update(
 		materialID,
 		title, 
 		description, 
@@ -195,13 +212,15 @@ func (c App) Update(materialID int, title, description, author, category, imgURL
 
 // Delete . 
 func (c App) Delete() revel.Result{
+	s := service()
+	m := s.Material
+	
 	id := c.Params.Route.Get("id")
 	MaterialID, err := strconv.Atoi(id)
 	if err != nil {
 		panic(err)
 	}
-	connection, err := storage.CreateConnectionPostgres("localhost",5232,"billfazz", "billfazz", "e_learning", "disable")
-	m := material.NewMaterial(mdb.NewMaterialDB(connection))
+	
 	_, err = m.Delete(MaterialID)
 	if err != nil {
 		panic(err)

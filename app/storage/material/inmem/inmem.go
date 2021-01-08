@@ -27,6 +27,15 @@ func (m *MaterialInMem) Get(MaterialD int) (*models.Material, error) {
 
 // Create .
 func (m *MaterialInMem) Create(Name, Description, Category, ImgURL, URL, Author string, UplaodedByUserID int) (int64, error) {
+	model := &models.Material{
+		Name : Name,
+		Description : Description,
+		Category : Category, 
+		ImgURL : ImgURL,
+		Author : Author, 
+		UploadedByUserID : UplaodedByUserID,
+	}
+	m.Materials = append(m.Materials, model)
 	return 0, nil
 }
 
